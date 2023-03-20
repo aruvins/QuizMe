@@ -1,22 +1,19 @@
 import styles from "@/styles/Home.module.css";
-import { Button, Input } from "@mui/joy";
+import { Button, Input, Typography } from "@mui/joy";
 import Head from "next/head";
 import { useState } from "react";
 import useSWR from "swr";
 
-const fetcher = (url, userText) =>{
+const fetcher = (url, userText) => {
   let data = fetch(url, {
     method: "POST",
     body: JSON.stringify({ text: userText }),
   }).then((r) => r.json());
   console.log("Sending to backend", userText);
   return data;
-
-}
-  
+};
 
 export default function Home() {
-
   const [questions, setQuestions] = useState();
   const [userText, setUserText] = useState();
   const [shouldFetch, setShouldFetch] = useState(false);
@@ -35,6 +32,12 @@ export default function Home() {
     setShouldFetch(true);
   };
 
+  function display(){
+    if (isLoading){
+
+    }
+  }
+
   return (
     <>
       <Head>
@@ -50,9 +53,12 @@ export default function Home() {
           placeholder="Type something..."
         />
         <Button onClick={sendDocument}>Submit</Button>
+        <div>
+          {data && (
+            <Typography variant="outlined" color="white">{JSON.stringify(data)}</Typography>
+          )}
+        </div>
       </main>
-
-      {data && <div>{JSON.stringify(data)}</div>}
     </>
   );
 }
