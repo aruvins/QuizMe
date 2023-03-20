@@ -7,6 +7,12 @@
   min-height: 100vh;
 }
 
+.textarea{
+  width: 50%;
+  height: 50%;
+  color: black;
+}
+
 .description {
   display: inherit;
   justify-content: inherit;
