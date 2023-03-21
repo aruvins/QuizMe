@@ -1,0 +1,17 @@
+1. The user would be able to input text and recieve 10 questions based on the text.
+     When a user access the application, they would be greeted with a text box where they can input they want a quiz for. They would then click the submit button below that. The user would then recieve a page with the text shown again and 10 questions based on the text below that.
+     
+2. The user would be able to highlight specific keywords and recieve a wikipedia article on the highlighted text.
+    After recieving the page with the questions, they would be able to highlight specific words or phrases and see a white box above it containing the definition from wikipedia.
+    
+3. The user would be able to create a profile
+    The user would have be able to click a sign up link where they can create a profile. The user would input their desired username and password. 
+    
+4. The user would be able to log in with username and password.
+    The user would be able to return to the site and input their username and password and be able to access all of the data associated to their profile.
+    
+5. As a logged in user, the user would be able save the questions.
+    Once the user is finished creating a quiz, they would be able to click a save button and add it to a saved quizzes page. 
+    
+6. As a logged in user, the user be able to access previous quizzes at a later date.
+    When the user is logged in they would be able to click onto a saved quizzes page and access their previously saved quizzes.
