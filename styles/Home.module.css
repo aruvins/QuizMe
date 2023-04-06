@@ -3,14 +3,9 @@
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  padding: 6rem;
   min-height: 100vh;
-}
-
-.textarea{
-  width: 50%;
-  height: 50%;
-  color: black;
+  margin-left: 15vw;
+  padding-top: 6em;
 }
 
 .description {
