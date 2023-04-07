@@ -9,8 +9,9 @@ import {
   Divider,
 } from "@mui/joy";
 import Head from "next/head";
-import { useState } from "react";
+import { useState, useEffect } from 'react';
 import useSWR from "swr";
+
 
 const fetcher = (url, userText, setShouldFetch) => {
   let data = fetch(url, {
@@ -40,6 +41,37 @@ export default function Home() {
   const sendDocument = () => {
     setShouldFetch(true);
   };
+
+  const [wikiSummary, setWikiSummary] = useState(null);
+
+  const fetchWikipediaSummary = async (text) => {
+    try {
+      const response = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(text)}`);
+      if (response.ok) {
+        const data = await response.json();
+        setWikiSummary(data.extract);
+      } else {
+        setWikiSummary(null);
+      }
+    } catch (error) {
+      console.error('Error fetching Wikipedia summary:', error);
+      setWikiSummary(null);
+    }
+  };
+
+  useEffect(() => {
+    const handleMouseUp = () => {
+      const selectedText = window.getSelection().toString().trim();
+      if (selectedText) {
+        fetchWikipediaSummary(selectedText);
+      }
+    };
+  
+    document.addEventListener('mouseup', handleMouseUp);
+    return () => {
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, []);
 
   function display() {
     if (isLoading) {
