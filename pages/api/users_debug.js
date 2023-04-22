@@ -1,6 +1,6 @@
 // Debug database connection
 
-import {connectToDb, User} from '../../database';
+import {connectToDb, User} from '../../database/database';
 
 export default async function handler(req, res) {
   await connectToDb();
@@ -12,4 +12,3 @@ export default async function handler(req, res) {
     res.status(405).json({ message: 'Method not allowed' });
   }
 }
-

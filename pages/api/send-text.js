@@ -14,6 +14,8 @@ function processData(text) {
     count = count + 1;
   }
 
+  console.log(output_object_array)
+
   return output_object_array;
 }
 
@@ -22,7 +24,7 @@ const useChatGPT = (text) => {
     {
       role: "user",
       content:
-        "Create 10 questions from the following text and provide the answers to those questions.",
+        "Create 10 questions from the following text and provide the answers to those questions. Deliminate questions and answers with a newline character",
     },
     { role: "user", content: text },
   ];

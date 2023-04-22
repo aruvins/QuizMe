@@ -7,18 +7,21 @@ import {
   Box,
   Stack,
   Divider,
-} from "@mui/joy";
+  Container,
+  Grid,
+} from "@mui/material";
 import Head from "next/head";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import useSWR from "swr";
+import Sidebar from "@/components/sidebar";
 
 const fetcher = (url, userText, setShouldFetch) => {
+  setShouldFetch(false);
   let data = fetch(url, {
     method: "POST",
     body: JSON.stringify({ text: userText }),
   }).then((r) => r.json());
   console.log("Sending to backend", userText);
-  setShouldFetch(false);
   return data;
 };
 
@@ -26,9 +29,13 @@ export default function Home() {
   const [questions, setQuestions] = useState();
   const [userText, setUserText] = useState();
   const [shouldFetch, setShouldFetch] = useState(false);
+  const shouldFetchRef = useRef(shouldFetch);
+  const [currentUser, setCurrentUser] = useState("test");
 
-  const { data, error, isLoading } = useSWR(
-    shouldFetch ? "/api/send-text" : null,
+  shouldFetchRef.current = shouldFetch; 
+
+  const { data, error, isLoading, isValidating } = useSWR(
+    shouldFetchRef.current ? "/api/send-text" : null,
     (url) => fetcher(url, userText, setShouldFetch)
   );
 
@@ -43,6 +50,10 @@ export default function Home() {
 
   function display() {
     if (isLoading) {
+      return <CircularProgress />;
+    }
+
+    if (isValidating) {
       return <CircularProgress />;
     }
 
@@ -63,15 +74,17 @@ export default function Home() {
       >
         {data.output_array.map((object) => (
           <Box sx={{ display: "flex", flexDirection: "row" }}>
-            <Typography variant="outlined" color="white">
+            <Typography variant="outlined" color="black">
               {object.question}
             </Typography>
             <Box sx={{ width: "10%" }}></Box>
-            <Typography variant="outlined" color="white">
+            <Typography variant="outlined" color="black">
               {object.answer}
             </Typography>
           </Box>
         ))}
+
+        <Button><Typography>Save Quiz!</Typography></Button>
       </Stack>
     );
   }
@@ -88,48 +101,32 @@ export default function Home() {
         />
       </Head>
       <main>
-        <Stack
-          sx={{
-            backgroundColor: "#dcd0ff",
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "15dvw",
-            height: "100dvh",
-            alignItems: "center",
-          }}
-        >
-          <Typography
-            width={"100%"}
-            sx={{ background: "4px black solid" }}
-            justifyContent="center"
-            level="h4"
-          >
-            Saved Quizes
-          </Typography>
-
-          <Divider />
-          <Box sx={{ height: "80%" }} />
-          <Button fullWidth>
-            <Typography color="white" level="h5">
-              Add New Quiz
-            </Typography>
-          </Button>
-          
-          <Button>
-            Logout
-          </Button>
-
-        </Stack>
-        <Box className={styles.main}>
-          <Input
-            onChange={handleTextAreaChange}
-            className={styles.textarea}
-            placeholder="Type something..."
-          />
-          <Button onClick={sendDocument}>Submit</Button>
-          <div>{display()}</div>
-        </Box>
+        <Sidebar />
+        <Container sx={{ width: "100%" }}>
+          <Stack className={styles.main}>
+            <Grid container spacing={2}>
+              <Grid item sm={8} md={8}>
+                <Input
+                  size="large"
+                  sx={{ width: "90%" }}
+                  onChange={handleTextAreaChange}
+                  className={styles.textarea}
+                  placeholder="Paste your document here"
+                />
+              </Grid>
+              <Grid item>
+                <Button
+                  variant="outlined"
+                  sx={{ width: "20px" }}
+                  onClick={sendDocument}
+                >
+                  Submit
+                </Button>
+              </Grid>
+            </Grid>
+            <div>{display()}</div>
+          </Stack>
+        </Container>
       </main>
     </>
   );

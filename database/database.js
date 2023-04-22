@@ -1,5 +1,4 @@
-import mongoose from 'mongoose';
-
+import mongoose from "mongoose";
 // Setup DB connection
 const connection = {};
 
@@ -18,32 +17,28 @@ export async function connectToDb() {
   console.log("Database connection established.");
 }
 
+var questionAnswerSchema = new mongoose.Schema(
+  { question: String, answer: String },
+  { noId: true }
+);
+
+const quizID = new mongoose.Schema(
+  {
+    quizID: {type: mongoose.Schema.Types.ObjectId, index: true, required: true, auto: true}
+  }
+);
 
 // Create schema for users collection
 const userSchema = new mongoose.Schema({
   _id: Number,
-  access_token: String,
-  first_name: String,
-  last_name: String,
-  history: [
+  name: String,
+  quizzes: [
     {
-      article: String,
-      questions: [
-        {
-          question: String,
-          user_guess: String,
-          is_guess_correct: Boolean,
-          model_response: String,
-        },
-      ],
+      name: String,
+      content: [questionAnswerSchema],
     },
   ],
-  preferences: {
-    dark_mode: Boolean,
-  },
 });
 
 // Prevent recompilation during HMR
-export const User = mongoose.models.user || mongoose.model('user', userSchema);
-
-
+export const User = mongoose.models.user || mongoose.model("user", userSchema);
