@@ -7,20 +7,20 @@ export default async function test(req, res) {
   //   quizzes: [],
   // });
 
-  User.findOneAndUpdate(
-    { _id: 0 },
-    {
-      $push: {
-        quizzes: {
-          name: "test quiz",
-          content: [
-            { question: "Test question", answer: "Test answer" },
-            { question: "another one", answer: "anotha one" },
-          ],
-        },
-      },
-    }
-  ).exec();
+  // User.findOneAndUpdate(
+  //   { _id: 0 },
+  //   {
+  //     $push: {
+  //       quizzes: {
+  //         name: "test quiz",
+  //         content: [
+  //           { question: "Test question", answer: "Test answer" },
+  //           { question: "another one", answer: "anotha one" },
+  //         ],
+  //       },
+  //     },
+  //   }
+  // ).exec();
   // test.quizzes.push({name:"test quiz"}, [{question: "Test question", answer: "Test answer"},{question: "another one", answer: "anotha one"}], {_id: 1})
   // // quizzes: [
   //   {
