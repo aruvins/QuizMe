@@ -21,6 +21,7 @@ export default function Home() {
   const [currentUser, setCurrentUser] = useState(0);
   const [currentQuiz, setCurrentQuiz] = useState(null);
   const [showSave, setShowSave] = useState(true);
+  const [mutateIt, setMutateIt] = useState(0);
   shouldFetchRef.current = shouldFetch;
 
   const { data, error, isLoading, isValidating } = useSWR(
@@ -38,7 +39,6 @@ export default function Home() {
       if (data) {
         return data;
       }
-
       return prevState;
     });
   }, [data]);
@@ -70,6 +70,8 @@ export default function Home() {
           userID={currentUser}
           setCurrentQuiz={setCurrentQuiz}
           setShowSave={setShowSave}
+          currentQuiz={currentQuiz}
+          mutateIt={mutateIt}
         />
         <Box
           sx={{
@@ -79,6 +81,7 @@ export default function Home() {
           }}
         >
           <InputAndDisplay
+            userID={currentUser}
             showSave={showSave}
             error={error}
             handleTextAreaChange={handleTextAreaChange}
@@ -87,6 +90,7 @@ export default function Home() {
             data={currentQuiz}
             isValidating={isValidating}
             currentQuiz={currentQuiz}
+            setMutateIt={setMutateIt}
           />
         </Box>
       </main>

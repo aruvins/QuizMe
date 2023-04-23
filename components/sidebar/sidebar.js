@@ -1,15 +1,15 @@
 import {
-  Stack,
-  Container,
-  Typography,
-  Divider,
-  Button,
   Box,
+  Button,
+  Divider,
+  Stack,
+  Typography
 } from "@mui/material";
 
 import useSWR from "swr";
 
 import CustomButton from "./customButton";
+import { useEffect } from "react";
 
 const fetcher = (url, userID) => {
   let data = fetch(url, {
@@ -19,11 +19,21 @@ const fetcher = (url, userID) => {
   return data;
 };
 
-export default function Sidebar({ setCurrentQuiz, userID, setShowSave }) {
-  const { data, error, isLoading, isValidating } = useSWR(
+export default function Sidebar({
+  setCurrentQuiz,
+  userID,
+  setShowSave,
+  mutateIt
+}) {
+
+  const { data, error, isLoading, isValidating, mutate } = useSWR(
     "/api/retrieve-quiz",
     (url) => fetcher(url, userID)
   );
+
+  useEffect(() => {
+    mutate()
+  }, [mutateIt])
 
   function Display() {
     if (error) {
@@ -44,8 +54,13 @@ export default function Sidebar({ setCurrentQuiz, userID, setShowSave }) {
 
     return data.map((quiz) => (
       <>
-      <CustomButton key={quiz} quiz={quiz} setQuiz={setCurrentQuiz} setShowSave={setShowSave} />
-      <Divider />
+        <CustomButton
+          key={quiz}
+          quiz={quiz}
+          setQuiz={setCurrentQuiz}
+          setShowSave={setShowSave}
+        />
+        <Divider />
       </>
     ));
   }
@@ -68,6 +83,7 @@ export default function Sidebar({ setCurrentQuiz, userID, setShowSave }) {
         alignItems="center"
         minWidth="100%"
         marginTop="2em"
+        marginBottom="2em"
       >
         <Box>
           <Typography
@@ -80,15 +96,13 @@ export default function Sidebar({ setCurrentQuiz, userID, setShowSave }) {
         </Box>
       </Box>
 
-      <Stack
-      >
-        {Display()}
-      </Stack>
+      <Stack>{Display()}</Stack>
 
-      <Divider />
-      <Box sx={{ height: "80%" }} />
+      <Box sx={{ height: "100%" }} />
 
-      <Button variant="outlined">LOGOUT</Button>
+      <Button sx={{marginBottom: '2em'}} variant="outlined">
+        LOGOUT
+      </Button>
     </Stack>
   );
 }

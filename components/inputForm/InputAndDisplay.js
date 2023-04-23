@@ -1,14 +1,15 @@
 import {
-  Container,
-  Stack,
-  Grid,
-  Input,
-  Button,
   Box,
+  Button,
   CircularProgress,
-  Typography,
+  Container,
+  Grid,
+  Popover,
+  Stack,
+  TextField,
+  Typography
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function InputAndDisplay({
   isLoading,
@@ -19,7 +20,38 @@ export default function InputAndDisplay({
   sendDocument,
   currentQuiz,
   showSave,
+  userID,
+  setMutateIt
 }) {
+  const [name, setName] = useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl)
+
+  const saveQuiz = () => {
+    console.log(name)
+    fetch("/api/add-quiz", {
+      method: "POST",
+      body: JSON.stringify({
+        userID: userID,
+        quiz: { name: name, content: currentQuiz.content },
+      }),
+    }).then((r) => r.json());
+  };
+
+  const handleTextFieldChange = (event) => {
+    setName(event.target.value);
+  };
+
+  const handleFinalSave = () => {
+    setAnchorEl(null);
+    saveQuiz();
+    setMutateIt(Math.random());
+    };
+
+  const handleSaveQuiz = (e) => {
+    setAnchorEl(e.currentTarget);
+  };
+
   function display() {
     if (isLoading) {
       return <CircularProgress />;
@@ -61,9 +93,15 @@ export default function InputAndDisplay({
         ))}
 
         {showSave && (
-          <Button>
-            <Typography>Save Quiz!</Typography>
-          </Button>
+          <div>
+            <Button onClick={handleSaveQuiz}>
+              <Typography>Save Quiz!</Typography>
+            </Button>
+            <Popover open={open} anchorEl={anchorEl}>
+              <TextField onChange={handleTextFieldChange} />{" "}
+              <Button onClick={handleFinalSave}>Save Quiz</Button>{" "}
+            </Popover>
+          </div>
         )}
       </Stack>
     );
@@ -75,9 +113,11 @@ export default function InputAndDisplay({
         <Grid container spacing={2}>
           <Grid item sm={8} md={8}>
             <Stack direction="column">
-              <Input
+              <TextField
                 size="large"
-                sx={{ width: "90%" }}
+                multiline
+                maxRows={20}
+                sx={{ width: "100%" }}
                 onChange={handleTextAreaChange}
                 placeholder="Paste your document here"
               />

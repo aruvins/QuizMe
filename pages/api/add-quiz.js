@@ -12,7 +12,7 @@ export default async function test(req, res) {
     let requestData = JSON.parse(req.body);
     let userID = requestData["userID"];
     let requestQuiz = requestData["quiz"];
-
+    console.log('request quiz', requestQuiz.name)
     User.findOneAndUpdate(
       { _id: userID },
       {
@@ -24,9 +24,7 @@ export default async function test(req, res) {
         },
       }
     ).exec();
-
     connectToDb();
-
     res.status(200).json({ message: "Success" });
   } catch (e) {
     console.log("Error caught");
