@@ -1,22 +1,11 @@
-import styles from "@/styles/Home.module.css";
-import {
-  Button,
-  Input,
-  Typography,
-  CircularProgress,
-  Box,
-  Stack,
-  Divider,
-  Container,
-  Grid,
-} from "@mui/material";
+import InputAndDisplay from "@/components/inputForm/InputAndDisplay";
+import Sidebar from "@/components/sidebar/sidebar";
+import { Box } from "@mui/material";
 import Head from "next/head";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useSWR from "swr";
-import Sidebar from "@/components/sidebar";
 
-const fetcher = (url, userText, setShouldFetch) => {
-  setShouldFetch(false);
+const fetcher = (url, userText) => {
   let data = fetch(url, {
     method: "POST",
     body: JSON.stringify({ text: userText }),
@@ -26,68 +15,44 @@ const fetcher = (url, userText, setShouldFetch) => {
 };
 
 export default function Home() {
-  const [questions, setQuestions] = useState();
   const [userText, setUserText] = useState();
   const [shouldFetch, setShouldFetch] = useState(false);
   const shouldFetchRef = useRef(shouldFetch);
-  const [currentUser, setCurrentUser] = useState("test");
-
-  shouldFetchRef.current = shouldFetch; 
+  const [currentUser, setCurrentUser] = useState(0);
+  const [currentQuiz, setCurrentQuiz] = useState(null);
+  const [showSave, setShowSave] = useState(true);
+  shouldFetchRef.current = shouldFetch;
 
   const { data, error, isLoading, isValidating } = useSWR(
     shouldFetchRef.current ? "/api/send-text" : null,
-    (url) => fetcher(url, userText, setShouldFetch)
+    (url) => fetcher(url, userText, setShouldFetch),
+    {
+      revalidateIfStale: true,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    }
   );
 
+  useEffect(() => {
+    setCurrentQuiz((prevState) => {
+      if (data) {
+        return data;
+      }
+
+      return prevState;
+    });
+  }, [data]);
+
   const handleTextAreaChange = (event) => {
+    setShouldFetch(false);
+    setCurrentQuiz(null);
     setUserText(event.target.value);
-    console.log("Text area change logged");
   };
 
   const sendDocument = () => {
+    setShowSave(true);
     setShouldFetch(true);
   };
-
-  function display() {
-    if (isLoading) {
-      return <CircularProgress />;
-    }
-
-    if (isValidating) {
-      return <CircularProgress />;
-    }
-
-    if (data === undefined) {
-      return <Box></Box>;
-    }
-
-    if (error) {
-      return <div>{error}</div>;
-    }
-
-    return (
-      <Stack
-        direction={"column"}
-        sx={{
-          backgroundColor: "white",
-        }}
-      >
-        {data.output_array.map((object) => (
-          <Box sx={{ display: "flex", flexDirection: "row" }}>
-            <Typography variant="outlined" color="black">
-              {object.question}
-            </Typography>
-            <Box sx={{ width: "10%" }}></Box>
-            <Typography variant="outlined" color="black">
-              {object.answer}
-            </Typography>
-          </Box>
-        ))}
-
-        <Button><Typography>Save Quiz!</Typography></Button>
-      </Stack>
-    );
-  }
 
   return (
     <>
@@ -101,32 +66,29 @@ export default function Home() {
         />
       </Head>
       <main>
-        <Sidebar />
-        <Container sx={{ width: "100%" }}>
-          <Stack className={styles.main}>
-            <Grid container spacing={2}>
-              <Grid item sm={8} md={8}>
-                <Input
-                  size="large"
-                  sx={{ width: "90%" }}
-                  onChange={handleTextAreaChange}
-                  className={styles.textarea}
-                  placeholder="Paste your document here"
-                />
-              </Grid>
-              <Grid item>
-                <Button
-                  variant="outlined"
-                  sx={{ width: "20px" }}
-                  onClick={sendDocument}
-                >
-                  Submit
-                </Button>
-              </Grid>
-            </Grid>
-            <div>{display()}</div>
-          </Stack>
-        </Container>
+        <Sidebar
+          userID={currentUser}
+          setCurrentQuiz={setCurrentQuiz}
+          setShowSave={setShowSave}
+        />
+        <Box
+          sx={{
+            minHeight: "100vh",
+            marginLeft: "15vw",
+            paddingTop: "6em",
+          }}
+        >
+          <InputAndDisplay
+            showSave={showSave}
+            error={error}
+            handleTextAreaChange={handleTextAreaChange}
+            sendDocument={sendDocument}
+            isLoading={isLoading}
+            data={currentQuiz}
+            isValidating={isValidating}
+            currentQuiz={currentQuiz}
+          />
+        </Box>
       </main>
     </>
   );

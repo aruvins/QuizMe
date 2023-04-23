@@ -1,4 +1,4 @@
-function processData(text) {
+function tokenizeData(text) {
   var output_array = text.split("\n");
   let filtered = output_array.filter((element) => element);
 
@@ -53,8 +53,9 @@ export default async function handler(req, res) {
   try {
     let data = await useChatGPT(text);
     let string = data.choices[0].message.content;
-    let processedData = processData(string);
-    res.status(200).json({ output_array: processedData });
+    let tokenizedData = tokenizeData(string);
+    
+    res.status(200).json({ content: tokenizedData });
   } catch (e) {
     res.status(500).json({ Error: e });
   }

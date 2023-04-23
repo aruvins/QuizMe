@@ -3,8 +3,6 @@ import { connectToDb, User } from "../../database/database";
 export default async function test(req, res) {
   //Wrong method
 
-  console.log(req.body);
-  console.log(req.method);
   if (req.method !== "POST") {
     res.status(405);
     return;

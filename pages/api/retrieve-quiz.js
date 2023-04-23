@@ -11,6 +11,7 @@ export default async function handler(req, res) {
     connectToDb();
     let userData = await User.findById(userID).exec();
     const userQuizzes = userData.quizzes;
+    console.log("userQuizzes", userQuizzes)
     res.status(200).json(userQuizzes);
     return;
   } catch (e) {
