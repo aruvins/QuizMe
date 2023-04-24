@@ -2,21 +2,21 @@ import {
   Box,
   Button,
   CircularProgress,
-  Container,
-  Grid,
   Popover,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import QuestionAndAnswer from "./QuestionAndAnswer";
+import useSWR from "swr";
+
 
 export default function InputAndDisplay({
-  isLoading,
-  isValidating,
-  data,
-  error,
+  isLoading: isLoadingResults,
+  isValidating: isValidatingResults,
+  data: quizData,
+  error: quizError,
   handleTextAreaChange,
   sendDocument,
   currentQuiz,
@@ -26,6 +26,30 @@ export default function InputAndDisplay({
 }) {
   const [name, setName] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [wikiText, setWikiText] = useState("test");
+  const [data, setData] = useState(null);
+  const [definition, setDefinition] = useState(null);
+  const [loadingDef, setLoadingDef] = useState(true);
+  console.log(wikiText);
+  const fetcher = async (url) => {
+    setLoadingDef(true)
+    let data = fetch(url, {
+      method: "POST",
+      body: JSON.stringify({ text: wikiText }),
+    }).then((r) => r.json());
+    console.log("Sending to backend", wikiText);
+    return data;
+  };
+
+  useEffect(() => {
+    fetcher("/api/get-wiki-text", wikiText).then((something) => {
+      setData(something);
+    });
+  }, [wikiText]);
+
+  useEffect(() => {setDefinition(data) 
+    setLoadingDef(false)}, [data]);
+
   const open = Boolean(anchorEl);
 
   const saveQuiz = () => {
@@ -53,24 +77,24 @@ export default function InputAndDisplay({
   };
 
   function display() {
-    if (isLoading) {
+    if (isLoadingResults) {
       return <CircularProgress />;
     }
 
-    if (isValidating) {
+    if (isValidatingResults) {
       return <CircularProgress />;
     }
 
     if (
-      data === undefined ||
+      quizData === undefined ||
       currentQuiz === undefined ||
       currentQuiz === null
     ) {
       return <Box></Box>;
     }
 
-    if (error) {
-      return <div>{error}</div>;
+    if (quizError) {
+      return <div>{quizError}</div>;
     }
 
     return (
@@ -78,12 +102,12 @@ export default function InputAndDisplay({
         direction={"column"}
         sx={{
           backgroundColor: "white",
-          marginTop: '1em'
+          marginTop: "1em",
         }}
       >
         {currentQuiz.content.map((quizSegment) => (
           <QuestionAndAnswer
-
+            setWikiText={setWikiText}
             id={quizSegment}
             question={quizSegment.question}
             answer={quizSegment.answer}
@@ -105,12 +129,8 @@ export default function InputAndDisplay({
   }
 
   return (
-    <Box
-    sx={{width: '70%'}}
-    >
-      <Stack direction="column"
-      sx={{width: '100%'}}
-      >
+    <Box sx={{ width: "70%" }}>
+      <Stack direction="column" sx={{ width: "100%" }}>
         <TextField
           size="large"
           multiline
@@ -127,6 +147,9 @@ export default function InputAndDisplay({
           Submit
         </Button>
       </Stack>
+      <Typography>
+        Highlight text to get a definition: {loadingDef ? "" : definition}
+      </Typography>
       <div>{display()}</div>
     </Box>
   );
