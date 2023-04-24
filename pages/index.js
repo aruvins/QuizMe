@@ -74,9 +74,11 @@ export default function Home() {
           mutateIt={mutateIt}
         />
         <Box
+          display="flex"
+          justifyContent="center"
           sx={{
             minHeight: "100vh",
-            marginLeft: "15vw",
+            marginLeft: "15dvw",
             paddingTop: "6em",
           }}
         >

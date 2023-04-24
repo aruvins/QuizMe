@@ -24,7 +24,7 @@ const useChatGPT = (text) => {
     {
       role: "user",
       content:
-        "Create 10 questions from the following text and provide the answers to those questions. Deliminate questions and answers with a newline character",
+        "Create 10 questions from the following text and provide the answers to those questions. Deliminate questions and answers with a newline character. Here is an example: What year did Obama first get elected?\n2008.",
     },
     { role: "user", content: text },
   ];

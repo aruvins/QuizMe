@@ -7,9 +7,10 @@ import {
   Popover,
   Stack,
   TextField,
-  Typography
+  Typography,
 } from "@mui/material";
 import { useState } from "react";
+import QuestionAndAnswer from "./QuestionAndAnswer";
 
 export default function InputAndDisplay({
   isLoading,
@@ -21,14 +22,13 @@ export default function InputAndDisplay({
   currentQuiz,
   showSave,
   userID,
-  setMutateIt
+  setMutateIt,
 }) {
   const [name, setName] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl)
+  const open = Boolean(anchorEl);
 
   const saveQuiz = () => {
-    console.log(name)
     fetch("/api/add-quiz", {
       method: "POST",
       body: JSON.stringify({
@@ -46,7 +46,7 @@ export default function InputAndDisplay({
     setAnchorEl(null);
     saveQuiz();
     setMutateIt(Math.random());
-    };
+  };
 
   const handleSaveQuiz = (e) => {
     setAnchorEl(e.currentTarget);
@@ -78,20 +78,17 @@ export default function InputAndDisplay({
         direction={"column"}
         sx={{
           backgroundColor: "white",
+          marginTop: '1em'
         }}
       >
-        {currentQuiz.content.map((object) => (
-          <Box sx={{ display: "flex", flexDirection: "row" }}>
-            <Typography variant="outlined" color="black">
-              {object.question}
-            </Typography>
-            <Box sx={{ width: "10%" }}></Box>
-            <Typography variant="outlined" color="black">
-              {object.answer}
-            </Typography>
-          </Box>
-        ))}
+        {currentQuiz.content.map((quizSegment) => (
+          <QuestionAndAnswer
 
+            id={quizSegment}
+            question={quizSegment.question}
+            answer={quizSegment.answer}
+          />
+        ))}
         {showSave && (
           <div>
             <Button onClick={handleSaveQuiz}>
@@ -108,31 +105,29 @@ export default function InputAndDisplay({
   }
 
   return (
-    <Container sx={{ width: "100%" }}>
-      <Stack>
-        <Grid container spacing={2}>
-          <Grid item sm={8} md={8}>
-            <Stack direction="column">
-              <TextField
-                size="large"
-                multiline
-                maxRows={20}
-                sx={{ width: "100%" }}
-                onChange={handleTextAreaChange}
-                placeholder="Paste your document here"
-              />
-              <Button
-                variant="outlined"
-                sx={{ width: "20px" }}
-                onClick={sendDocument}
-              >
-                Submit
-              </Button>
-            </Stack>
-          </Grid>
-        </Grid>
-        <div>{display()}</div>
+    <Box
+    sx={{width: '70%'}}
+    >
+      <Stack direction="column"
+      sx={{width: '100%'}}
+      >
+        <TextField
+          size="large"
+          multiline
+          maxRows={20}
+          sx={{ width: "100%", marginBottom: "1em" }}
+          onChange={handleTextAreaChange}
+          placeholder="Paste your document here"
+        />
+        <Button
+          variant="outlined"
+          sx={{ width: "20px" }}
+          onClick={sendDocument}
+        >
+          Submit
+        </Button>
       </Stack>
-    </Container>
+      <div>{display()}</div>
+    </Box>
   );
 }
