@@ -32,6 +32,7 @@ const quizID = new mongoose.Schema(
 const userSchema = new mongoose.Schema({
   _id: Number,
   name: String,
+  email: String,
   quizzes: [
     {
       name: String,
