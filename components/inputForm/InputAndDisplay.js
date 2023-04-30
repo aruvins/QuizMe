@@ -21,7 +21,7 @@ export default function InputAndDisplay({
   sendDocument,
   currentQuiz,
   showSave,
-  userID,
+  userEmail,
   setMutateIt,
 }) {
   const [name, setName] = useState(null);
@@ -56,7 +56,7 @@ export default function InputAndDisplay({
     fetch("/api/add-quiz", {
       method: "POST",
       body: JSON.stringify({
-        userID: userID,
+        userEmail: userEmail,
         quiz: { name: name, content: currentQuiz.content },
       }),
     }).then((r) => r.json());

@@ -30,7 +30,6 @@ const quizID = new mongoose.Schema(
 
 // Create schema for users collection
 const userSchema = new mongoose.Schema({
-  _id: Number,
   name: String,
   email: String,
   quizzes: [

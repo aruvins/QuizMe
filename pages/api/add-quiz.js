@@ -10,11 +10,11 @@ export default async function test(req, res) {
 
   try {
     let requestData = JSON.parse(req.body);
-    let userID = requestData["userID"];
+    let userEmail = requestData["userEmail"];
     let requestQuiz = requestData["quiz"];
     console.log('request quiz', requestQuiz.name)
     User.findOneAndUpdate(
-      { _id: userID },
+      { email: userEmail },
       {
         $push: {
           quizzes: {

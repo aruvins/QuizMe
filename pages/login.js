@@ -2,7 +2,9 @@ import { signIn } from "next-auth/react";
 
 function GoogleSignInButton() {
   return (
-    <button onClick={() => signIn("google")}>
+    // After filling in credentials, user will be redirected to the `create-user` page, which automatically
+    // creates a new user and then redirects to the home page
+    <button onClick={() => signIn("google", {callbackUrl: `${window.location.origin}/create-user`})}>
       Sign in with Google
     </button>
   );
@@ -11,7 +13,7 @@ function GoogleSignInButton() {
 export default function Home() {
   return (
     <div>
-      <h1>Welcome to my app</h1>
+      <h1>Please sign in</h1>
       <GoogleSignInButton />
     </div>
   );

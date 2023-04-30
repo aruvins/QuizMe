@@ -7,9 +7,11 @@ export default async function handler(req, res) {
     return;
   }
   try {
-    let userID = JSON.parse(req.body)["userID"];
+    let userEmail = JSON.parse(req.body)["userEmail"];
     connectToDb();
-    let userData = await User.findById(userID).exec();
+    let userData = await User.findOne(
+      { email: userEmail }
+    ).lean();
     const userQuizzes = userData.quizzes;
     res.status(200).json(userQuizzes);
     return;
