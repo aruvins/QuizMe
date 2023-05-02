@@ -3,6 +3,7 @@ import Sidebar from "@/components/sidebar/sidebar";
 import { Box } from "@mui/material";
 import Head from "next/head";
 import { useEffect, useRef, useState } from "react";
+import { getSession } from "next-auth/react";
 import useSWR from "swr";
 
 const fetcher = (url, userText) => {
@@ -14,15 +15,37 @@ const fetcher = (url, userText) => {
   return data;
 };
 
-export default function Home() {
+export async function getServerSideProps(context) {
+  const session = await getSession(context);
+
+  if (!session || !session.user) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: { session },
+  };
+}
+
+export default function Home({ session }) {
   const [userText, setUserText] = useState();
   const [shouldFetch, setShouldFetch] = useState(false);
   const shouldFetchRef = useRef(shouldFetch);
-  const [currentUser, setCurrentUser] = useState(0);
+  const [currentUser, setCurrentUser] = useState(null);
   const [currentQuiz, setCurrentQuiz] = useState(null);
   const [showSave, setShowSave] = useState(true);
   const [mutateIt, setMutateIt] = useState(0);
   shouldFetchRef.current = shouldFetch;
+
+  // Set the email
+  useEffect(() => {
+    setCurrentUser(session.user.email);
+  }, [session]);
 
   const { data, error, isLoading, isValidating } = useSWR(
     shouldFetchRef.current ? "/api/send-text" : null,
@@ -67,7 +90,7 @@ export default function Home() {
       </Head>
       <main>
         <Sidebar
-          userID={currentUser}
+          userEmail={currentUser}
           setCurrentQuiz={setCurrentQuiz}
           setShowSave={setShowSave}
           currentQuiz={currentQuiz}
@@ -83,7 +106,7 @@ export default function Home() {
           }}
         >
           <InputAndDisplay
-            userID={currentUser}
+            userEmail={currentUser}
             showSave={showSave}
             error={error}
             handleTextAreaChange={handleTextAreaChange}

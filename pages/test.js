@@ -8,7 +8,7 @@ export default function test() {
   const handleClick = async () => {
     let response = await fetch("/api/add-quiz", {
       method: "POST",
-      body: JSON.stringify({userID: 0, quiz: {name: "post this shit yeah", content: [{question: "1234", answer:"fuck bitches make money"}]}})
+      body: JSON.stringify({userEmail: "zach.furman1@gmail.com", quiz: {name: "test quiz", content: [{question: "1234", answer:"5678"}]}})
     });
     let jsonData = await response.json();
     console.log(jsonData);
@@ -18,7 +18,7 @@ export default function test() {
   const handleShowQuizzes = async () => {
     let response = await fetch("/api/retrieve-quiz", {
       method: "POST",
-      body: JSON.stringify({userID: 0})
+      body: JSON.stringify({userEmail: "zach.furman1@gmail.com"})
     });
     let jsonData = await response.json();
     console.log(jsonData);

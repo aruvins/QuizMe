@@ -10,25 +10,26 @@ import useSWR from "swr";
 
 import CustomButton from "./customButton";
 import { useEffect } from "react";
+import { signOut } from "next-auth/react";
 
-const fetcher = (url, userID) => {
+const fetcher = (url, userEmail) => {
   let data = fetch(url, {
     method: "POST",
-    body: JSON.stringify({ userID: userID }),
+    body: JSON.stringify({ userEmail: userEmail }),
   }).then((r) => r.json());
   return data;
 };
 
 export default function Sidebar({
   setCurrentQuiz,
-  userID,
+  userEmail,
   setShowSave,
   mutateIt
 }) {
 
   const { data, error, isLoading, isValidating, mutate } = useSWR(
-    "/api/retrieve-quiz",
-    (url) => fetcher(url, userID)
+    userEmail ? "/api/retrieve-quiz" : null,
+    (url) => fetcher(url, userEmail)
   );
 
   useEffect(() => {
@@ -100,7 +101,10 @@ export default function Sidebar({
 
       <Box sx={{ height: "100%" }} />
 
-      <Button sx={{marginBottom: '2em'}} variant="outlined">
+      <Button
+        sx={{marginBottom: '2em'}}
+        variant="outlined"
+        onClick={() => signOut({callbackUrl: `${window.location.origin}/login`})}>
         LOGOUT
       </Button>
     </Stack>
