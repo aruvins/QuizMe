@@ -19,5 +19,5 @@
 Changes as of April 30th: 
 
 In the final stages of our project we decided to narrow the scope of certain things so we could focus on completing all requirements.
-We decided to get rid of entity recognition. We felt as though highlighting for definitions was sufficient. 
+We decided to get rid of entity recognition. We felt as though highlighting for definitions was sufficient for the user to acquire contextual information. 
 
