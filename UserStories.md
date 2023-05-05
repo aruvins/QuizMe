@@ -15,3 +15,9 @@
     
 6. As a logged in user, the user be able to access previous quizzes at a later date.
     When the user is logged in they would be able to click onto a saved quizzes page and access their previously saved quizzes. If a user is not logged in, they would not be able to access any saved quizzes.
+
+Changes as of April 30th: 
+
+In the final stages of our project we decided to narrow the scope of certain things so we could focus on completing all requirements.
+We decided to get rid of entity recognition. We felt as though highlighting for definitions was sufficient. 
+
